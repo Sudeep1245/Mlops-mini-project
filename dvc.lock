@@ -1,0 +1,118 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python .\src\data\data_ingestion.py
+    deps:
+    - path: .\src\data\data_ingestion.py
+      hash: md5
+      md5: 12a6850b592c869df8a4114f31b4ab2f
+      size: 3977
+    params:
+      params.yaml:
+        data_ingestion.test_size: 0.15
+    outs:
+    - path: data\raw
+      hash: md5
+      md5: 9096031b858a2cbb24cca78d3ce8a538.dir
+      size: 827973
+      nfiles: 2
+  data_preprocessing:
+    cmd: python .\src\data\data_preprocessing.py
+    deps:
+    - path: .\data\raw
+      hash: md5
+      md5: 9096031b858a2cbb24cca78d3ce8a538.dir
+      size: 827973
+      nfiles: 2
+    - path: .\src\data\data_preprocessing.py
+      hash: md5
+      md5: bdbd069f7946c6e6cb0c7ea20634ce96
+      size: 6413
+    outs:
+    - path: data\interim
+      hash: md5
+      md5: d0cdd6fb545fab7f4d07a6e9190b0cb8.dir
+      size: 566210
+      nfiles: 2
+  feature_engineering:
+    cmd: python .\src\features\feature_engineering.py
+    deps:
+    - path: .\data\interim
+      hash: md5
+      md5: d0cdd6fb545fab7f4d07a6e9190b0cb8.dir
+      size: 566210
+      nfiles: 2
+    - path: .\src\features\feature_engineering.py
+      hash: md5
+      md5: c88bdab4876cc8d27e1ed27e6c4a5467
+      size: 5054
+    params:
+      params.yaml:
+        feature_engineering.max_features: 1000
+    outs:
+    - path: .\data\processed
+      hash: md5
+      md5: bd51b022eccf12e0d3582258b47710c9.dir
+      size: 20786916
+      nfiles: 2
+  model_building:
+    cmd: python .\src\models\model_building.py
+    deps:
+    - path: .\data\processed
+      hash: md5
+      md5: bd51b022eccf12e0d3582258b47710c9.dir
+      size: 20786916
+      nfiles: 2
+    - path: .\src\models\model_building.py
+      hash: md5
+      md5: 1987b025410d58960ee2b5c2ef69fdb9
+      size: 2753
+    params:
+      params.yaml:
+        model_building.C: 1
+        model_building.penalty: l2
+        model_building.solver: liblinear
+    outs:
+    - path: .\models\model.pkl
+      hash: md5
+      md5: 9b665e96ad8789da97ef854280208731
+      size: 8699
+  model_evaluation:
+    cmd: python .\src\models\model_evaluation.py
+    deps:
+    - path: .\data\processed\test_bow.csv
+      hash: md5
+      md5: 25162cb99d8889b08b1969c8c38e1d96
+      size: 3122568
+    - path: .\models\model.pkl
+      hash: md5
+      md5: 9b665e96ad8789da97ef854280208731
+      size: 8699
+    - path: .\src\models\model_evaluation.py
+      hash: md5
+      md5: fa3c541273861038d22b9739221f3a7b
+      size: 5115
+    outs:
+    - path: confusion_matrix.png
+      hash: md5
+      md5: cc14ffaa917a96709b3cb1d354b4499e
+      size: 14163
+    - path: reports\experiment_info.json
+      hash: md5
+      md5: 6740914f579b64c84f9adfbae47b594b
+      size: 96
+    - path: reports\metrics.json
+      hash: md5
+      md5: a0133d8fe021461aea78bf61b636a1d9
+      size: 145
+  model_registry:
+    cmd: python .\src\models\model_registry.py
+    deps:
+    - path: .\reports\experiment_info.json
+      hash: md5
+      md5: 6599122250ad9b2b91ab3607d02fcf7b
+      size: 82
+    - path: src\models\model_registry.py
+      hash: md5
+      md5: cdf1637e3884a2f55830d49e73dfd71e
+      size: 1953
