@@ -14,9 +14,6 @@
 # MODEL_INFO_PATH = Path("reports/experiment_info.json")
 # MODEL_NAME = "model"
 
-# mlflow.set_tracking_uri("https://dagshub.com/Sudeep1245/Mlops-mini-project.mlflow")
-# dagshub.init(repo_owner="Sudeep1245", repo_name="Mlops-mini-project", mlflow=True)
-
 
 # # --------------------------------------------------
 # # Logging

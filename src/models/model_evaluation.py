@@ -2,6 +2,7 @@ import json
 import logging
 import pickle
 from pathlib import Path
+import os
 
 import dagshub
 import mlflow
@@ -35,9 +36,18 @@ EXPERIMENT_NAME = "Logistic_regression_after_BOW"
 # MLflow + DagsHub Setup
 # --------------------------------------------------
 
-mlflow.set_tracking_uri("https://dagshub.com/Sudeep1245/Mlops-mini-project.mlflow")
-dagshub.init(repo_owner="Sudeep1245", repo_name="Mlops-mini-project", mlflow=True)
+dagshub_token = os.getenv('DAGSHUB_CONN')
+if not dagshub_token:
+    raise EnvironmentError('DAGSHUB_CONN is not created. please set first')
 
+os.environ['MLFLOW_TRACKING_USERNAME'] = dagshub_token
+os.environ['MLFLOW_TRACKING_PASSWORD'] = dagshub_token
+
+dagshub_url = 'https://dagshub.com'
+repo_owner = 'Sudeep1245'
+repo_name = "Mlops-mini-project"
+
+mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
 
 # --------------------------------------------------
 # Logging
