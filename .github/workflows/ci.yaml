@@ -21,7 +21,7 @@ jobs :
 
       - name : run pipeline
         env:
-          DAGSHUB_CONN : ${{ secerts.DAGSHUB_CONN }}
+          DAGSHUB_CONN : ${{ secrets.DAGSHUB_CONN }}
         run : |
           dvc repro
 
